@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= locals.username %> 的會員中心 | 香氣美學</title>
+    <link rel="stylesheet" href="/stylesheets/style.css?v=1.0" />
+    <link rel="stylesheet" href="/stylesheets/profile.css?v=1.0" />
+    <link rel="stylesheet" href="/stylesheets/index.css?v=1.0" />
+  </head>
+  <body>
+    <div class="container">
+      <nav class="nav">
+        <h1 class="logo">香氣美學</h1>
+        <div class="nav-links">
+          <a href="/" class="nav-link">首頁</a>
+          <a href="/perfume/list" class="nav-link">香水精選</a>
+          <a href="/member/logout" class="nav-link">登出</a> 
+        </div>
+      </nav>
+      <main class="main-content">
+        <!-- 歡迎區塊保持不變 -->
+        <section class="welcome-block">
+          <h1>會員中心</h1>
+          <h2>
+            歡迎回來，<span class="member-name"><%= locals.username %></span>
+          </h2>
+        </section>
+
+        <!-- 修改功能卡片區的購物車連結 -->
+        <section class="feature-cards">
+          <a href="/member/cart" class="feature-card"> 
+            <div class="card-content">
+              <h3>購物車</h3>
+
+            </div>
+          </a>
+          <a href="/member/edit" class="feature-card">
+            <div class="card-content">
+              <h3>個人設定</h3>
+              <p>修改個人資料</p>
+            </div>
+          </a>
+        </section>
+
+      
+<!-- 精選香氛區域 -->
+<section class="featured-perfumes">
+  <h2 class="section-title">精選香氛</h2>
+  <div class="perfume-carousel-container">
+    <button class="carousel-nav prev">&lt;</button>
+    <div class="carousel-track">
+      <% if (perfumes && perfumes.length > 0) { %>
+        <% console.log('Rendering perfumes:', perfumes); %> <!-- 添加日誌 -->
+        <% perfumes.forEach(function(perfume) { %>
+          <div class="perfume-card">
+            <img src="<%= perfume.image %>" alt="<%= perfume.name %>" />
+            <h3><%= perfume.name %></h3>
+            <p class="type">香調：<%= perfume.type %></p>
+            <p class="price">HKD$ <%= perfume.price %></p>
+            <button class="add-to-cart" data-id="<%= perfume._id %>">
+              <svg class="cart-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-7 2h7a2 2 0 0 0 2-2V6H6v14a2 2 0 0 0 2 2zM3 6h18l-3 13H6L3 6z"/>
+              </svg>
+              加入購物車
+            </button>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div>暫無香水資料</div>
+      <% } %>
+    </div>
+    <button class="carousel-nav next">&gt;</button>
+  </div>
+</body>
+</section>
+    
+
+
+    <!-- 腳本引入 -->
+    <script src="/javascripts/carousel.js?v=1.0"></script>
+    <!-- <script src="/javascripts/perfume.js"></script>
+    <script src="/javascripts/member-cart.js"></script>  -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // 輪播功能
+        const track = document.querySelector('.carousel-track');
+        const prevButton = document.querySelector('.prev');
+        const nextButton = document.querySelector('.next');
+        
+        if (prevButton && nextButton && track) {
+            let position = 0;
+            const cards = track.querySelectorAll('.perfume-card');
+            const cardWidth = cards[0]?.offsetWidth || 0;
+            
+            prevButton.addEventListener('click', () => {
+                position = Math.min(position + cardWidth, 0);
+                track.style.transform = `translateX(${position}px)`;
+            });
+            
+            nextButton.addEventListener('click', () => {
+                const minPosition = -(cards.length * cardWidth - track.offsetWidth);
+                position = Math.max(position - cardWidth, minPosition);
+                track.style.transform = `translateX(${position}px)`;
+            });
+        }
+    
+        // 添加購物車按鈕的點擊事件處理
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', async function() {
+                const perfumeId = this.dataset.id;
+                
+                try {
+                    const response = await fetch('/member/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ perfumeId })
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error('加入購物車失敗');
+                    }
+    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert('商品已加入購物車！');
+                        // 更新購物車數量
+                        const cartCountElement = document.getElementById('cartCount');
+                        if (cartCountElement) {
+                            cartCountElement.textContent = 
+                                parseInt(cartCountElement.textContent || '0') + 1;
+                        }
+                        // 導向會員購物車頁面
+                        window.location.href = '/member/cart';
+                    } else {
+                        throw new Error(data.message || '加入購物車失敗');
+                    }
+                } catch (error) {
+                    console.error('加入購物車錯誤:', error);
+                    alert('加入購物車失敗，請稍後再試');
+                }
+            });
+        });
+    });
+</script>
+</html>

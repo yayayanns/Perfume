@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>香水個性分析結果</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-50">
+    <div class="result-container max-w-7xl mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold text-center mb-8">您的香水個性分析結果</h1>
+
+      <div class="text-lg text-center mb-6">
+        根據您的選擇，我們為您量身打造了以下分析
+      </div>
+
+      <div class="result-card bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-2xl font-bold text-center mb-4 type-title">
+          <%= result.type %>
+        </h2>
+
+        <p class="text-gray-700 text-lg text-center mb-8">
+          <%= result.description %>
+        </p>
+
+        <div class="scores-section">
+          <h3 class="text-xl font-semibold mb-6">您的香調偏好分析</h3>
+
+          <div class="score-grid space-y-4">
+            <% Object.entries(scores).forEach(([type, score]) => { %>
+            <div class="score-item flex items-center gap-4">
+              <div class="score-label w-24">
+                <%= type === 'woody' ? '木質調' : type === 'floral' ? '花香調' :
+                type === 'fresh' ? '清新調' : type === 'oriental' ? '東方調' :
+                type === 'citrus' ? '柑橘調' : type === 'green' ? '綠植調' :
+                type === 'fruity' ? '果香調' : type === 'sweet' ? '甜香調' :
+                type === 'marine' ? '海洋調' : type === 'spicy' ? '辛香調' :
+                type %>
+              </div>
+
+              <div
+                class="score-bar-container flex-1 bg-gray-200 rounded-full h-4"
+              >
+                <div
+                  class="score-bar bg-green-500 rounded-full h-full"
+                  style="width: <%= (score/10) * 100 %>%"
+                ></div>
+              </div>
+
+              <div class="score-value w-16 text-right"><%= score %>/10</div>
+            </div>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+
+      <section class="recommendations bg-white rounded-lg shadow-lg p-6 mb-8">
+        <h2 class="text-2xl font-bold text-center mb-6">為您推薦的香水</h2>
+
+        <% if (recommendations && recommendations.length > 0) { %>
+        <div class="perfume-grid grid grid-cols-1 md:grid-cols-3 gap-6">
+          <% recommendations.forEach(perfume => { %>
+          <div
+            class="perfume-card border rounded-lg shadow-md overflow-hidden"
+            data-perfume-id="<%= perfume._id %>"
+          >
+            <div class="perfume-image-container aspect-square">
+              <img
+                src="<%= perfume.image %>"
+                alt="<%= perfume.name %>"
+                class="w-full h-full object-cover"
+                onerror="this.src='/images/default-perfume.jpg'"
+              />
+            </div>
+
+            <div class="perfume-info p-4">
+              <h3 class="text-xl font-semibold mb-2"><%= perfume.name %></h3>
+              <p class="text-gray-600 mb-2">香調：<%= perfume.type %></p>
+              <p class="text-lg font-bold mb-4">HKD$ <%= perfume.price %></p>
+
+              <button
+                class="add-to-cart-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-200"
+                onclick="addToCart('<%= perfume._id %>')"
+              >
+                加入購物車
+              </button>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <p class="text-gray-600 text-center">暫時沒有符合的推薦香水。</p>
+        <% } %>
+      </section>
+
+      <div class="text-center mt-8">
+        <a
+          href="/quiz/start"
+          class="retry-button inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-200"
+        >
+          重新測驗
+        </a>
+        <div class="text-center mt-4">
+          <a
+            href="/"
+            class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+          >
+            返回首頁
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function addToCart(perfumeId) {
+        fetch("/cart/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ perfumeId }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              window.location.href = "/cart";
+            } else {
+              alert(data.message || "加入購物車失敗，請稍後再試");
+            }
+          })
+          .catch((error) => {
+            console.error("加入購物車失敗：", error);
+            alert("加入購物車失敗，請稍後再試");
+          });
+      }
+    </script>
+  </body>
+</html>

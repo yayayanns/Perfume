@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的訂單 - 香水商店</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold mb-8">我的訂單</h1>
+
+      <% if (orders && orders.length > 0) { %>
+      <div class="space-y-6">
+        <% orders.forEach(order => { %>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <h2 class="text-lg font-semibold">
+                  訂單編號：<%= order.orderNumber %>
+                </h2>
+                <p class="text-gray-600 mt-1">
+                  建立時間：<%= new Date(order.createdAt).toLocaleString() %>
+                </p>
+              </div>
+              <span
+                class="px-4 py-2 rounded-full text-sm <%= order.status === '待處理' ? 'bg-yellow-100 text-yellow-800' : order.status === '處理中' ? 'bg-blue-100 text-blue-800' : order.status === '已完成' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' %>"
+              >
+                <%= order.status %>
+              </span>
+            </div>
+
+            <div class="border-t border-gray-200 pt-4 mt-4">
+              <div class="flex justify-between text-lg font-bold">
+                <span>總計</span>
+                <span>HKD$ <%= order.totalAmount %></span>
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <a
+                href="/orders/<%= order._id %>"
+                class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-200"
+              >
+                查看詳情
+              </a>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+      <% } else { %>
+      <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+        <p class="text-gray-600 text-lg mb-4">您還沒有任何訂單</p>
+        <a
+          href="/quiz/start"
+          class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-200"
+        >
+          開始選購香水
+        </a>
+      </div>
+      <% } %>
+    </div>
+  </body>
+</html>

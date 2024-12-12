@@ -1,0 +1,8 @@
+<h1><%= message %></h1>
+<% if (error) { %>
+<h2>Status: <%= error.status || 500 %></h2>
+<pre><%= error.stack || "No stack trace available" %></pre>
+<% } else { %>
+<h2>Status: Unknown</h2>
+<p>No additional error information available.</p>
+<% } %>

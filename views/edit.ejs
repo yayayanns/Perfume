@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>修改會員資料</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>修改會員資料</h1>
+
+      <form id="updateForm">
+        <div class="form-group">
+          <label for="email">新電子郵件：</label>
+          <input type="email" id="email" name="email" />
+        </div>
+        <div class="form-group">
+          <label for="currentPassword">目前密碼：</label>
+          <input type="password" id="currentPassword" name="currentPassword" />
+        </div>
+        <div class="form-group">
+          <label for="newPassword">新密碼：</label>
+          <input type="password" id="newPassword" name="newPassword" />
+        </div>
+        <div class="form-actions">
+          <button type="submit">更新資料</button>
+          <button
+            type="button"
+            onclick="window.location.href='/member/profile'"
+          >
+            返回會員中心
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      // 處理表單提交
+      document.getElementById("updateForm").onsubmit = async (e) => {
+        e.preventDefault();
+
+        const formData = {
+          email: document.getElementById("email").value,
+          currentPassword: document.getElementById("currentPassword").value,
+          newPassword: document.getElementById("newPassword").value,
+        };
+
+        Object.keys(formData).forEach((key) => {
+          if (!formData[key]) delete formData[key];
+        });
+
+        try {
+          const response = await fetch("/member/update", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert("資料更新成功！");
+            window.location.href = "/member/profile";
+          } else {
+            alert(result.message || "更新失敗");
+          }
+        } catch (error) {
+          alert("更新失敗，請稍後再試");
+        }
+      };
+    </script>
+  </body>
+</html>

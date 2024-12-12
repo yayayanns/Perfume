@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>會員註冊</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>會員註冊</h1>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="username">用戶名稱：</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="form-group">
+          <label for="email">電子郵件：</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="password">密碼：</label>
+          <input type="password" id="password" name="password" required />
+          <small>密碼長度至少6位字元</small>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">確認密碼：</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+          />
+        </div>
+        <div class="form-actions">
+          <button type="submit">註冊</button>
+        </div>
+      </form>
+      <div class="links">
+        <p>已有帳號？ <a href="/member/login">立即登入</a></p>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("registerForm").onsubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+          // 在發送請求前，先在控制台輸出一下
+          console.log("Submitting form...");
+
+          const formData = {
+            username: document.getElementById("username").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+          };
+
+          console.log("Form data:", formData);
+
+          const response = await fetch(
+            window.location.origin + "/member/register",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            }
+          );
+
+          const data = await response.json();
+          console.log("Response:", data);
+
+          if (response.ok) {
+            alert("註冊成功！");
+            window.location.href = "/member/login";
+          } else {
+            alert(data.message || "註冊失敗");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("註冊失敗，請聯絡我們。");
+        }
+      };
+    </script>
+  </body>
+</html>

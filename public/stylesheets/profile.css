@@ -1,0 +1,195 @@
+/* 基本容器樣式 */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 歡迎區塊樣式 */
+.welcome-block {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.welcome-block h1 {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.welcome-block h2 {
+  font-size: 20px;
+  color: #666;
+}
+
+/* 功能卡片區域 */
+.feature-cards {
+  display: flex;
+  justify-content: center; /* 水平置中對齊 */
+  gap: 30px; /* 卡片之間的間距 */
+  margin: 40px auto; /* 上下間距，左右自動置中 */
+  max-width: 800px; /* 限制最大寬度 */
+  padding: 0 20px;
+}
+
+.feature-card {
+  flex: 1; /* 讓兩張卡片平均分配空間 */
+  max-width: calc(50% - 15px); /* 確保每張卡片最多占50%寬度（減去間距的一半） */
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  
+  /* 卡片內容置中 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.feature-card a {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.feature-card a:last-child {
+  margin-bottom: 0;
+}
+
+/* 香水走馬燈區域 */
+.featured-perfumes {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.section-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.perfume-carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+.carousel-container {
+  overflow: hidden;
+  width: calc(100% - 80px);
+  margin: 0 auto;
+  position: relative;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.3s ease;
+  gap: 20px;
+}
+
+/* 轮播导航按钮 */
+.carousel-nav {
+  position: absolute;
+  top: 35%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 24px;
+  color: #666;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-nav.prev {
+  left: 10px;
+}
+
+.carousel-nav.next {
+  right: 10px;
+}
+
+.carousel-nav:hover {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 香水卡片樣式 */
+.perfume-card {
+  flex: 0 0 300px;
+  background: #fff;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transition: transform 0.3s ease;
+}
+
+.perfume-card {
+  flex: 0 0 300px;
+  padding: 15px;
+}
+
+.perfume-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+  margin-bottom: 15px;
+  background-color: white;
+}
+
+.perfume-card .image-container {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.perfume-card .image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.perfume-card h3 {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.perfume-card .type {
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.perfume-card .price {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .feature-cards {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .feature-card {
+    flex: 1 1 calc(100% - 20px);
+    max-width: 90%;
+  }
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>編輯香水</title>
+    <style>
+        .edit-form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .edit-form div {
+            margin-bottom: 15px;
+        }
+        .edit-form label {
+            display: inline-block;
+            width: 100px;
+        }
+        .current-image {
+            max-width: 200px;
+            margin: 10px 0;
+        }
+        .preview-image {
+            max-width: 200px;
+            display: none;
+            margin-top: 10px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons button {
+            margin-right: 10px;
+            padding: 8px 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-form">
+        <h1>編輯香水</h1>
+        <form action="/perfume/admin/edit/<%= perfume.id %>" method="POST" enctype="multipart/form-data">
+            <div>
+                <label>名稱：</label>
+                <input type="text" name="name" value="<%= perfume.name %>" required />
+            </div>
+            <div>
+                <label>類型：</label>
+                <select name="type">
+                    <option value="花香調" <%= perfume.type === '花香調' ? 'selected' : '' %>>花香調</option>
+                    <option value="清新調" <%= perfume.type === '清新調' ? 'selected' : '' %>>清新調</option>
+                    <option value="木質調" <%= perfume.type === '木質調' ? 'selected' : '' %>>木質調</option>
+                    <option value="東方調" <%= perfume.type === '東方調' ? 'selected' : '' %>>東方調</option>
+                    <option value="果香調" <%= perfume.type === '果香調' ? 'selected' : '' %>>果香調</option>
+                    <option value="柑橘調" <%= perfume.type === '柑橘調' ? 'selected' : '' %>>柑橘調</option>
+                    <option value="舒緩調" <%= perfume.type === '舒緩調' ? 'selected' : '' %>>舒緩調</option>
+                </select>
+            </div>
+            <div>
+                <label>價格：</label>
+                <input type="number" name="price" value="<%= perfume.price %>" required />
+            </div>
+            <div>
+                <label>當前圖片：</label>
+                <img src="<%= perfume.image %>" alt="當前圖片" class="current-image" />
+            </div>
+            <div>
+                <label>更換圖片：</label>
+                <input type="file" name="image" accept="image/*" onchange="previewImage(this)" />
+                <img id="imagePreview" class="preview-image" />
+            </div>
+            <div>
+                <label>描述：</label>
+                <textarea name="description" required rows="4" cols="50"><%= perfume.description %></textarea>
+            </div>
+            <div class="buttons">
+                <button type="submit">保存修改</button>
+                <button type="button" onclick="window.location.href='/perfume/admin'">返回</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>

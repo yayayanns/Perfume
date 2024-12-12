@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>測驗歷史記錄</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+      }
+      .history-container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .result-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        padding: 20px;
+      }
+      .result-date {
+        color: #666;
+        font-size: 0.9em;
+      }
+      .result-type {
+        font-size: 1.2em;
+        margin: 10px 0;
+        color: #2c3e50;
+      }
+      .answers-list {
+        margin: 15px 0;
+      }
+      .answer-item {
+        margin-bottom: 10px;
+      }
+      .question-text {
+        font-weight: bold;
+      }
+      .selected-option {
+        color: #4caf50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="history-container">
+      <h1>測驗歷史記錄</h1>
+
+      <% if (results.length === 0) { %>
+      <p>還沒有測驗記錄</p>
+      <% } else { %> <% results.forEach(result => { %>
+      <div class="result-card">
+        <div class="result-date">
+          <%= new Date(result.date).toLocaleString() %>
+        </div>
+        <div class="result-type"><%= result.result.type %></div>
+        <p><%= result.result.description %></p>
+
+        <div class="answers-list">
+          <h3>回答詳情：</h3>
+          <% result.answers.forEach((answer, index) => { %>
+          <div class="answer-item">
+            <div class="question-text">
+              Q<%= index + 1 %>: <%= answer.questionText %>
+            </div>
+            <div class="selected-option">
+              選擇: <%= answer.selectedOption %>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+      <% }) %> <% } %>
+
+      <a href="/quiz/start" class="start-button">進行新的測驗</a>
+    </div>
+  </body>
+</html>

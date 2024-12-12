@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>會員購物車 | 香氣美學</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" href="/stylesheets/cart.css" />
+  </head>
+  <body>
+    <div class="container">
+      <nav class="nav">
+        <h1 class="logo">香氣美學</h1>
+        <div class="nav-links">
+          <a href="/" class="nav-link">首頁</a>
+          <a href="/perfume/list" class="nav-link">香水精選</a>
+          <a href="/member/profile" class="nav-link">會員中心</a>
+          <a href="/member/logout" class="nav-link">登出</a>
+        </div>
+      </nav>
+
+      <main class="main-content">
+        <div class="cart-container">
+          <h2>會員購物車</h2>
+          <% if (cartItems && cartItems.length > 0) { %>
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th>商品圖片</th>
+                <th>商品名稱</th>
+                <th>類型</th>
+                <th>單價</th>
+                <th>數量</th>
+                <th>小計</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% cartItems.forEach(function(item) { %>
+              <tr class="cart-item" data-id="<%= item.perfume._id %>">
+                <td>
+                  <img
+                    src="<%= item.perfume.image %>"
+                    alt="<%= item.perfume.name %>"
+                    class="cart-item-image"
+                  />
+                </td>
+                <td><%= item.perfume.name %></td>
+                <td><%= item.perfume.type %></td>
+                <td>HKD$ <%= item.perfume.price %></td>
+                <td>
+                  <div
+                    class="quantity-control"
+                    data-id="<%= item.perfume._id %>"
+                  >
+                    <button class="minus-btn">-</button>
+                    <input
+                      type="number"
+                      class="quantity-input"
+                      value="<%= item.quantity %>"
+                      min="1"
+                    />
+                    <button class="plus-btn">+</button>
+                  </div>
+                </td>
+                <td>HKD$ <%= item.perfume.price * item.quantity %></td>
+                <td>
+                  <button class="remove-item" data-id="<%= item.perfume._id %>">
+                    <svg
+                      class="trash-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"
+                      />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+
+          <div class="cart-summary">
+            <div class="total">總計: HKD$ <%= totalPrice %></div>
+            <a href="/checkout" class="checkout-btn">前往結帳</a>
+          </div>
+          <% } else { %>
+          <div class="empty-cart">
+            <p>購物車是空的</p>
+            <a href="/member/profile" class="back-to-shop">回到會員商店</a>
+          </div>
+          <% } %>
+        </div>
+      </main>
+    </div>
+
+    <script src="/javascripts/member-cart.js"></script>
+  </body>
+</html>

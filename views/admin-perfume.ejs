@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>香水管理</title>
+    <style>
+      .add-form div {
+        margin-bottom: 15px;
+      }
+      .add-form label {
+        display: inline-block;
+        width: 100px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      .preview-image {
+        max-width: 200px;
+        display: none;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>香水管理</h1>
+    <!-- 新增香水表單 -->
+    <div class="add-form">
+      <h2>新增香水</h2>
+      <form
+        action="/perfume/admin/add"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div>
+          <label>名稱：</label>
+          <input type="text" name="name" required />
+        </div>
+        <div>
+          <label>類型：</label>
+          <select name="type">
+            <option value="花香調">花香調</option>
+            <option value="清新調">清新調</option>
+            <option value="木質調">木質調</option>
+            <option value="東方調">東方調</option>
+            <option value="果香調">果香調</option>
+            <option value="柑橘調">柑橘調</option>
+            <option value="舒緩調">舒緩調</option>
+          </select>
+        </div>
+        <div>
+          <label>價格：</label>
+          <input type="number" name="price" required />
+        </div>
+        <div>
+          <label>圖片：</label>
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            required
+            onchange="previewImage(this)"
+          />
+          <img id="imagePreview" class="preview-image" />
+        </div>
+        <div>
+          <label>描述：</label>
+          <textarea name="description" required rows="4" cols="50"></textarea>
+        </div>
+        <button type="submit">新增</button>
+      </form>
+    </div>
+
+    <!-- 香水列表 -->
+    <div class="perfume-list">
+      <h2>現有香水</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>圖片</th>
+            <th>名稱</th>
+            <th>類型</th>
+            <th>價格</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% perfumes.forEach(perfume => { %>
+          <tr>
+            <td><%= perfume.id %></td>
+            <td>
+              <img
+                src="<%= perfume.image %>"
+                alt="<%= perfume.name %>"
+                style="max-width: 100px"
+              />
+            </td>
+            <td><%= perfume.name %></td>
+            <td><%= perfume.type %></td>
+            <td>HKD$ <%= perfume.price %></td>
+            <td class="actions">
+              <button
+                onclick="window.location.href='/perfume/admin/edit/<%= perfume.id %>'"
+                class="edit-btn"
+              >
+                編輯
+              </button>
+              <button
+                onclick="deletePerfume('<%= perfume.id %>')"
+                class="delete-btn"
+              >
+                刪除
+              </button>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      function previewImage(input) {
+        const preview = document.getElementById("imagePreview");
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.style.display = "block";
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      async function deletePerfume(id) {
+        if (confirm("確定要刪除這個香水嗎？")) {
+          try {
+            const response = await fetch(`/perfume/admin/delete/${id}`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              // 刪除成功，重新加載頁面
+              alert("刪除成功！");
+              window.location.reload();
+            } else {
+              // 刪除失敗，顯示錯誤信息
+              alert("刪除失敗：" + (result.message || "未知錯誤"));
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("刪除失敗：" + error.message);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,272 @@
+/* 基本樣式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 容器 */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* 主視覺區域 */
+.hero {
+  height: 100vh;
+  background-image: url("/images/hero-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  position: relative;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.hero-content {
+  max-width: 800px;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero p {
+  font-size: 1.3rem;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* 品牌故事區域 */
+.brand-story {
+  padding: 5rem 0;
+  background-color: #f9f9f9;
+}
+
+.brand-story h2 {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-weight: 400;
+  font-size: 2rem;
+}
+
+.story-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.story-text p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+  color: #333;
+}
+
+.story-image img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 精選香水區域 */
+.featured-perfumes {
+  padding: 5rem 0;
+  background-color: #f9f9f9;
+}
+
+.featured-perfumes h2 {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.perfume-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 2rem;
+}
+
+.perfume-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.perfume-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.perfume-info {
+  padding: 1.5rem;
+}
+.perfume-info h3 {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.perfume-info p {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+.price {
+  font-weight: 500;
+  color: #333;
+}
+
+.add-to-cart {
+  width: 100%;
+  background-color: #4caf50; /* 綠色背景 */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.add-to-cart:hover {
+  background-color: #4caf50;
+}
+
+.cart-icon {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+/* 頁尾區域 */
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 4rem 0 2rem;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer-section h3 {
+  margin-bottom: 1rem;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cart-count {
+  background-color: #dc3545;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  margin-left: 10px;
+  display: inline-block;
+}
+
+.cart-icon-badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.floating-cart {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4caf50;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.floating-cart .cart-icon {
+  color: white;
+  width: 28px;
+  height: 28px;
+}
+
+.floating-cart .cart-count {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .story-content {
+    grid-template-columns: 1fr;
+  }
+}

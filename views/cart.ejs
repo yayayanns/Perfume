@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>購物車</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold mb-8">購物車</h1>
+
+      <div class="mb-6 p-4 bg-white rounded-lg shadow">
+        <% if (isGuest) { %>
+        <div class="bg-blue-50 p-4 rounded-lg mb-4">
+          <p class="text-lg">您現在是以訪客身份購物</p>
+          <p class="mt-2">註冊成為會員可以享有更多優惠！</p>
+          <div class="mt-4">
+            <a
+              href="/member/register"
+              class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-4"
+            >
+              立即註冊
+            </a>
+            <a
+              href="/member/login"
+              class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+            >
+              會員登入
+            </a>
+          </div>
+        </div>
+        <% } else { %>
+        <p class="text-lg">選購你專屬的香水。</p>
+        <% } %>
+      </div>
+
+      <div class="text-center mb-6">
+        <a
+          href="/"
+          class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+        >
+          返回首頁
+        </a>
+      </div>
+
+      <% if (cartItems.length > 0) { %>
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="divide-y divide-gray-200">
+          <% cartItems.forEach(item => { %> <% if (item.perfume) { %>
+          <div class="p-6 flex items-center">
+            <div class="flex-shrink-0 w-24 h-24">
+              <img
+                src="<%= item.perfume.image %>"
+                alt="<%= item.perfume.name %>"
+                class="w-full h-full object-cover rounded"
+              />
+            </div>
+            <div class="ml-6 flex-1">
+              <h3 class="text-lg font-semibold"><%= item.perfume.name %></h3>
+              <p class="text-gray-600">香調：<%= item.perfume.type %></p>
+              <p class="text-lg font-bold mt-2">
+                HKD$ <%= item.perfume.price %>
+              </p>
+            </div>
+          <!-- 修改數量控制部分 -->
+          <div class="item-quantity flex items-center gap-2">
+            <button 
+              onclick="updateQuantity('<%= item.perfume._id %>', 'decrease')" 
+              class="quantity-decrease bg-gray-300 text-black rounded px-2 py-1"
+              <%= (item.quantity || 1) <= 1 ? 'disabled' : '' %>
+            >-</button>
+            <span class="quantity-number font-bold"><%= item.quantity || 1 %></span>
+            <button 
+              onclick="updateQuantity('<%= item.perfume._id %>', 'increase')" 
+              class="quantity-increase bg-gray-300 text-black rounded px-2 py-1"
+            >+</button>
+          </div>
+          
+          <!-- 更新小計顯示 -->
+          <div class="ml-6">
+            <p class="text-lg font-bold">小計: HKD$ <%= (item.perfume.price * (item.quantity || 1)).toFixed(2) %></p>
+            <button
+              onclick="removeFromCart('<%= item.perfume._id %>')"
+              class="text-red-500 hover:text-red-700 ml-4"
+            >
+              移除
+            </button>
+          </div>
+          </div>
+          <% } else { %>
+          <div class="p-6 text-red-500">無法載入商品數據，請稍後再試。</div>
+          <% } %> <% }); %>
+        </div>
+
+        <div class="p-6 bg-gray-50">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-lg font-semibold">總計：</span>
+            <span class="text-2xl font-bold">HKD$ <%= totalPrice %></span>
+          </div>
+          <button
+            onclick="proceedToCheckout()"
+            class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded"
+          >
+            前往結帳
+          </button>
+        </div>
+      </div>
+      <% } else { %>
+      <div class="p-8 text-center bg-white rounded-lg shadow">
+        <p class="text-gray-600 text-lg">購物車是空的</p>
+
+        <a
+          href="/quiz/start"
+          class="mt-4 inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+        >
+          開始選購香水
+        </a>
+      </div>
+      <% } %>
+    </div>
+
+    <script>
+      function removeFromCart(perfumeId) {
+        console.log(perfumeId)
+        fetch("/cart/remove", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ perfumeId }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              window.location.reload();
+            } else {
+              alert(data.message || "移除商品失敗，請稍後再試");
+            }
+          })
+          .catch((error) => {
+            console.error("移除商品失敗：", error);
+            alert("移除商品失敗，請稍後再試");
+          });
+      }
+
+      function proceedToCheckout() {
+        window.location.href = "/checkout";
+      }
+
+      function updateQuantity(perfumeId, action) {
+        fetch('/cart/update-quantity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ perfumeId, action })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            window.location.reload();
+          }
+        })
+        .catch(error => {
+          console.error('更新數量失敗：', error);
+          alert('更新數量失敗，請稍後再試');
+        });
+      }
+    </script>
+    <script src="/javascripts/cart.js"></script>
+  </body>
+</html>
