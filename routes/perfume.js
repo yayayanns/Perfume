@@ -309,4 +309,73 @@ router.get("/init-perfumes", async (req, res) => {
   }
 });
 
+// 顯示香水列表
+router.get("/list", async (req, res) => {
+  try {
+    const db = await getDB();
+    const perfumes = await db.collection("perfumes").find({}).toArray();
+
+    console.log("獲取到的香水列表:", perfumes);
+
+    res.render("perfume-list", {
+      perfumes: perfumes,
+      username: req.session.username,
+    });
+  } catch (error) {
+    console.error("獲取香水列表失敗:", error);
+    res.status(500).render("error", { message: "無法載入香水列表" });
+  }
+});
+
+// 獲取單個香水詳情
+router.get("/:id", async (req, res) => {
+  try {
+    const db = await getDB();
+    const perfume = await db.collection("perfumes").findOne({
+      _id: new ObjectId(req.params.id),
+    });
+
+    if (!perfume) {
+      return res.status(404).render("error", { message: "找不到該香水" });
+    }
+
+    res.render("perfume-detail", {
+      perfume: perfume,
+      username: req.session.username,
+    });
+  } catch (error) {
+    console.error("獲取香水詳情失敗:", error);
+    res.status(500).render("error", { message: "無法載入香水詳情" });
+  }
+});
+
+// ----------------- 購物車相關路由 -----------------
+
+// 檢查會員狀態並跳轉
+router.get("/check-member-status", (req, res) => {
+  const isMember = req.query.isMember;
+  if (isMember === "yes") {
+    res.redirect("/perfume/member-cart");
+  } else {
+    res.redirect("/perfume/cart");
+  }
+});
+
+// 訪客購物車路由
+router.get("/cart", (req, res) => {
+  res.render("cart", { cartItems: [], isMember: false });
+});
+
+// 會員購物車路由
+router.get("/member-cart", (req, res) => {
+  res.render("member-cart", { cartItems: [], discount: 10, isMember: true });
+});
+
+// 用戶註冊
+router.post("/register", (req, res) => {
+  const userData = req.body;
+  console.log("用戶已註冊:", userData);
+  res.redirect("/perfume/member-cart");
+});
+
 module.exports = router;

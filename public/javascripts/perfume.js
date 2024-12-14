@@ -101,34 +101,34 @@ function setupAddToCartButtons() {
 function addToCart(perfumeId) {
   console.log("發送數據:", { perfumeId });
 
-  // // 檢查是否為會員（可以通過檢查特定的元素來判斷）
-  // const isMember = document
-  //   .querySelector(".nav-link")
-  //   ?.textContent.includes("登出");
-  // const cartEndpoint = isMember ? "/member/cart/add" : "/cart/add";
+  // 檢查是否為會員（可以通過檢查特定的元素來判斷）
+  const isMember = document
+    .querySelector(".nav-link")
+    ?.textContent.includes("登出");
+  const cartEndpoint = isMember ? "/member/cart/add" : "/cart/add";
 
-  // fetch(cartEndpoint, {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify({ perfumeId }),
-  // })
-  //   .then((response) => {
-  //     console.log("響應狀態:", response.status);
-  //     return response.json();
-  //   })
-  //   .then((data) => {
-  //     console.log("伺服器響應:", data);
-  //     if (data.success) {
-  //       // 根據是否為會員決定重定向的頁面
-  //       window.location.href = isMember ? "/member/cart" : "/cart";
-  //     } else {
-  //       throw new Error(data.message || "加入購物車失敗");
-  //     }
-  //   })
-  //   .catch((error) => {
-  //     console.error("錯誤:", error);
-  //     alert("加入購物車失敗，請稍後再試");
-  //   });
+  fetch(cartEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ perfumeId }),
+  })
+    .then((response) => {
+      console.log("響應狀態:", response.status);
+      return response.json();
+    })
+    .then((data) => {
+      console.log("伺服器響應:", data);
+      if (data.success) {
+        // 根據是否為會員決定重定向的頁面
+        window.location.href = isMember ? "/member/cart" : "/cart";
+      } else {
+        throw new Error(data.message || "加入購物車失敗");
+      }
+    })
+    .catch((error) => {
+      console.error("錯誤:", error);
+      alert("加入購物車失敗，請稍後再試");
+    });
 }

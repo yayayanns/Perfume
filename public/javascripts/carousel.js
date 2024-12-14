@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextButton = document.querySelector(".carousel-nav.next");
 
   let currentIndex = 0;
+  const maxVisibleItems = 4; // 限制顯示的香水數量
 
   const updateCarousel = () => {
     const cardWidth = carouselTrack.children[0].getBoundingClientRect().width;
@@ -21,7 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   nextButton.addEventListener("click", () => {
-    if (currentIndex < carouselTrack.children.length - 1) {
+    if (
+      currentIndex <
+      Math.min(carouselTrack.children.length, maxVisibleItems) - 1
+    ) {
       currentIndex++;
       updateCarousel();
     }

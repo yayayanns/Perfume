@@ -1,69 +1,106 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // 綁定會員購物車按鈕事件
-  const addToMemberCartButtons =
-    document.querySelectorAll(".add-to-membercart");
+  // 數量控制功能
+  const quantityControls = document.querySelectorAll(".quantity-control");
 
-  addToMemberCartButtons.forEach((button) => {
-    button.addEventListener("click", async function (e) {
-      e.preventDefault();
+  quantityControls.forEach((control) => {
+    const minusBtn = control.querySelector(".minus-btn");
+    const plusBtn = control.querySelector(".plus-btn");
+    const quantitySpan = control.querySelector(".quantity");
+    const perfumeId = control.getAttribute("data-perfume-id");
 
-      const perfumeId = this.dataset.id;
-      const perfumeName = this.dataset.name;
-
+    // 通用的數量更新函數
+    const updateQuantity = async (action) => {
       try {
-        // 修改這裡的路徑
-        const response = await fetch("/member/cart/add", {
+        if (!perfumeId) {
+          alert("商品ID不存在");
+          return;
+        }
+
+        const response = await fetch("/member/cart/update-quantity", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include", // 添加這行確保發送 cookie
           body: JSON.stringify({
             perfumeId: perfumeId,
+            action: action,
           }),
         });
 
-        const result = await response.json();
-
         if (response.status === 401) {
+          // 處理未登入情況
+          alert("請先登入會員");
           window.location.href = "/member/login";
           return;
         }
 
-        if (result.success) {
-          // 更新購物車數量顯示
-          const cartCountElement = document.getElementById("cartCount");
-          if (cartCountElement) {
-            cartCountElement.textContent =
-              Number(cartCountElement.textContent || 0) + 1;
-          }
-          alert(`${perfumeName} 已加入會員購物車！`);
+        const data = await response.json();
+        if (response.ok && data.success) {
+          window.location.reload();
         } else {
-          alert(result.message || "加入購物車失敗");
+          alert(data.message || "更新數量失敗");
         }
       } catch (error) {
-        console.error("加入會員購物車失敗:", error);
-        alert("加入購物車時發生錯誤，請稍後再試");
+        console.error(`更新數量失敗 (${action}):`, error);
+        alert("更新數量失敗，請稍後再試");
+      }
+    };
+
+    // 減少數量按鈕
+    minusBtn &&
+      minusBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        console.log("點擊減少按鈕，商品ID:", perfumeId);
+        updateQuantity("decrease");
+      });
+
+    // 增加數量按鈕
+    plusBtn &&
+      plusBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        console.log("點擊增加按鈕，商品ID:", perfumeId);
+        updateQuantity("increase");
+      });
+  });
+
+  // 刪除按鈕功能
+  const deleteButtons = document.querySelectorAll(".delete-btn");
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (confirm("確定要刪除這個商品嗎？")) {
+        try {
+          const perfumeId = button.getAttribute("data-perfume-id");
+          const response = await fetch("/member/cart/remove", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              perfumeId: perfumeId,
+            }),
+          });
+
+          const data = await response.json();
+          if (response.ok && data.success) {
+            window.location.reload();
+          } else {
+            alert(data.message || "刪除失敗");
+          }
+        } catch (error) {
+          console.error("刪除失敗:", error);
+          alert("刪除失敗，請稍後再試");
+        }
       }
     });
   });
 
-  // 更新購物車數量顯示路徑也要修改
-  const updateCartCount = async () => {
-    try {
-      const response = await fetch("/member/cart/count");
-      const data = await response.json();
-
-      if (data.success) {
-        const cartCountElement = document.getElementById("cartCount");
-        if (cartCountElement) {
-          cartCountElement.textContent = data.count;
-        }
-      }
-    } catch (error) {
-      console.error("更新購物車數量失敗:", error);
-    }
-  };
-
-  // 頁面載入時更新購物車數量
-  updateCartCount();
+  // 結帳按鈕功能
+  const checkoutButton = document.querySelector(".checkout-btn");
+  checkoutButton &&
+    checkoutButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = "/member/checkout";
+    });
 });

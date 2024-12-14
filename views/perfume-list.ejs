@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>香水列表 | 香氣美學</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" href="/stylesheets/perfume-list.css" />
+  </head>
+  <body>
+    <div class="container">
+      <nav class="nav">
+        <h1 class="logo">香氣美學</h1>
+        <div class="nav-links">
+          <a href="/" class="nav-link">首頁</a>
+          <a href="/perfume/list" class="nav-link">香水列表</a>
+          <a href="/member/login" class="nav-link">會員中心</a>
+          <% if (username) { %>
+          <a href="/member/cart" class="nav-link">購物車</a>
+          <a href="/member/logout" class="nav-link">登出</a>
+          <% } else { %>
+          <a href="/member/login" class="nav-link">登入</a>
+          <% } %>
+        </div>
+      </nav>
+
+      <main class="perfume-list-container">
+        <h2>香水列表</h2>
+        <div class="perfume-list-filters">
+          <div class="search-box">
+            <input type="text" id="search-input" placeholder="搜尋香水..." />
+          </div>
+
+          <div class="filter-options">
+            <select id="sort-select">
+              <option value="default">預設排序</option>
+              <option value="price-asc">價格由低到高</option>
+              <option value="price-desc">價格由高到低</option>
+              <option value="name-asc">名稱 A-Z</option>
+              <option value="name-desc">名稱 Z-A</option>
+            </select>
+
+            <select id="filter-type">
+              <option value="all">所有類型</option>
+              <option value="花香調">花香調</option>
+              <option value="果香調">果香調</option>
+              <option value="木質調">木質調</option>
+              <option value="東方調">東方調</option>
+              <option value="清新調">清新調</option>
+            </select>
+
+            <button id="reset-filters">重置篩選</button>
+</form>
+          </div>
+        </div>
+        <div class="perfume-list-grid">
+          <% if (perfumes && perfumes.length > 0) { %> <%
+          perfumes.forEach(function(perfume) { %>
+          <div class="perfume-list-card">
+            <img
+              src="<%= perfume.image %>"
+              alt="<%= perfume.name %>"
+              class="perfume-list-image"
+            />
+            <div class="perfume-list-info">
+              <h3><%= perfume.name %></h3>
+              <p class="perfume-list-type"><%= perfume.type %></p>
+              <p class="perfume-list-price">HKD$ <%= perfume.price %></p>
+              <p class="perfume-list-description"><%= perfume.description %></p>
+              <button
+                onclick="addToCart('<%= perfume._id %>')"
+                class="perfume-list-add-cart"
+              >
+                <svg
+                  class="cart-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M4.78571 5H18.2251C19.5903 5 20.5542 6.33739 20.1225 7.63246L18.4558 12.6325C18.1836 13.4491 17.4193 14 16.5585 14H6.07142M4.78571 5L4.74531 4.71716C4.60455 3.73186 3.76071 3 2.76541 3H2M4.78571 5L6.07142 14M6.07142 14L6.25469 15.2828C6.39545 16.2681 7.23929 17 8.23459 17H17M17 17C15.8954 17 15 17.8954 15 19C15 20.1046 15.8954 21 17 21C18.1046 21 19 20.1046 19 19C19 17.8954 18.1046 17 17 17ZM11 19C11 20.1046 10.1046 21 9 21C7.89543 21 7 20.1046 7 19C7 17.8954 7.89543 17 9 17C10.1046 17 11 17.8954 11 19Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                加入購物車
+              </button>
+</form>
+            </div>
+          </div>
+          <% }); %> <% } else { %>
+          <p class="no-perfumes">目前沒有香水商品</p>
+          <% } %>
+        </div>
+      </main>
+    </div>
+
+    <script src="/javascripts/perfume-list.js"></script>
+  </body>
+</html>

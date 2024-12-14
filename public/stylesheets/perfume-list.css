@@ -1,0 +1,144 @@
+/* 香水列表頁面專用樣式 */
+
+/* 列表容器 */
+.perfume-list-container {
+  padding: 2rem;
+}
+
+/* 香水卡片網格 */
+.perfume-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* 香水卡片 */
+.perfume-list-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.perfume-list-card:hover {
+  transform: translateY(-5px);
+}
+
+/* 香水圖片 */
+.perfume-list-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* 香水信息 */
+.perfume-list-info {
+  padding: 1.5rem;
+}
+
+.perfume-list-info h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.perfume-list-type {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.perfume-list-price {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+  margin: 0.5rem 0;
+}
+
+.perfume-list-description {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+/* 加入購物車按鈕 */
+.perfume-list-add-cart {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.perfume-list-add-cart:hover {
+  background-color: #45a049;
+}
+
+.cart-icon {
+  font-size: 1.2rem;
+}
+
+/* 篩選區域 */
+.perfume-list-filters {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .perfume-list-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .perfume-list-container {
+    padding: 1rem;
+  }
+}
+
+/* 購物車按鈕樣式 */
+.add-to-cart {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+}
+
+.add-to-cart:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.add-to-cart:active {
+    transform: translateY(0);
+}
+
+.cart-icon {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+}

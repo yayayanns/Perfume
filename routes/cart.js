@@ -3,53 +3,68 @@ const { ObjectId } = require("mongodb");
 const router = express.Router();
 const { getDB } = require("./db");
 
-// 顯示訪客購物車內容
+// 檢查登入狀態
+router.get("/check-auth", (req, res) => {
+  res.json({ isLoggedIn: !!req.session.userId });
+});
+
+// 訪客購物車路由
 router.get("/", async (req, res) => {
   try {
-    const db = await getDB();
-    let cartItems = [];
-    let totalPrice = 0;
-
-    // 如果用戶已登入，重定向到會員購物車
+    // 如果已登入，重定向到會員購物車
     if (req.session.userId) {
       return res.redirect("/member/cart");
     }
 
-    // 處理訪客購物車
-    if (req.session.cart && req.session.cart.length > 0) {
-      const perfumes = await db
-        .collection("perfumes")
-        .find({
-          _id: {
-            $in: req.session.cart.map((item) => new ObjectId(item.perfumeId)),
-          },
-        })
-        .toArray();
+    // 初始化購物車數據
+    const cart = req.session.cart || [];
+    let cartItemsWithDetails = [];
+    let totalPrice = 0; // 初始化 totalPrice
 
-      cartItems = req.session.cart.map((cartItem) => {
-        const perfume = perfumes.find(
-          (p) => p._id.toString() === cartItem.perfumeId
-        );
-        return {
-          perfume,
-          quantity: cartItem.quantity || 1,
-        };
-      });
+    // 如果購物車有商品，獲取商品詳細信息
+    if (cart.length > 0) {
+      try {
+        const db = await getDB();
+        const perfumeIds = cart.map((item) => new ObjectId(item.perfumeId));
 
-      totalPrice = cartItems.reduce(
-        (sum, item) => sum + item.perfume.price * item.quantity,
-        0
-      );
+        // 獲取所有相關香水的詳細信息
+        const perfumes = await db
+          .collection("perfumes")
+          .find({ _id: { $in: perfumeIds } })
+          .toArray();
+
+        // 組合購物車項目和香水詳細信息
+        cartItemsWithDetails = cart.map((item) => {
+          const perfume = perfumes.find(
+            (p) => p._id.toString() === item.perfumeId
+          );
+          const itemSubtotal = perfume ? perfume.price * item.quantity : 0;
+          totalPrice += itemSubtotal; // 計算總價
+
+          return {
+            perfume: perfume,
+            quantity: item.quantity,
+            subtotal: itemSubtotal,
+          };
+        });
+      } catch (dbError) {
+        console.error("數據庫查詢錯誤：", dbError);
+        throw new Error("無法獲取商品信息");
+      }
     }
 
+    // 渲染購物車頁面
     res.render("cart", {
-      cartItems,
-      totalPrice,
       isGuest: true,
+      cartItems: cartItemsWithDetails,
+      totalPrice: totalPrice,
     });
   } catch (error) {
-    console.error("購物車錯誤:", error);
-    res.status(500).render("error", { message: "無法載入購物車內容" });
+    console.error("獲取購物車失敗：", error);
+    res.status(500).render("error", {
+      message: "無法載入購物車",
+      error: process.env.NODE_ENV === "development" ? error : {},
+    });
   }
 });
 

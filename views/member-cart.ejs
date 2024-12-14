@@ -1,101 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
   <head>
-    <title>會員購物車 | 香氣美學</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-    <link rel="stylesheet" href="/stylesheets/cart.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>會員購物車</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .quantity-input {
+        width: 3rem;
+        text-align: center;
+      }
+      .cart-item {
+        display: grid;
+        grid-template-columns: 100px 2fr 1fr 1fr auto;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .cart-item:last-child {
+        border-bottom: none;
+      }
+    </style>
   </head>
-  <body>
-    <div class="container">
-      <nav class="nav">
-        <h1 class="logo">香氣美學</h1>
-        <div class="nav-links">
-          <a href="/" class="nav-link">首頁</a>
-          <a href="/perfume/list" class="nav-link">香水精選</a>
-          <a href="/member/profile" class="nav-link">會員中心</a>
-          <a href="/member/logout" class="nav-link">登出</a>
-        </div>
-      </nav>
+  <body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">會員購物車</h1>
+        <a
+          href="/member/profile"
+          class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded"
+        >
+          返回會員中心
+        </a>
+      </div>
 
-      <main class="main-content">
-        <div class="cart-container">
-          <h2>會員購物車</h2>
-          <% if (cartItems && cartItems.length > 0) { %>
-          <table class="cart-table">
-            <thead>
-              <tr>
-                <th>商品圖片</th>
-                <th>商品名稱</th>
-                <th>類型</th>
-                <th>單價</th>
-                <th>數量</th>
-                <th>小計</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% cartItems.forEach(function(item) { %>
-              <tr class="cart-item" data-id="<%= item.perfume._id %>">
-                <td>
-                  <img
-                    src="<%= item.perfume.image %>"
-                    alt="<%= item.perfume.name %>"
-                    class="cart-item-image"
-                  />
-                </td>
-                <td><%= item.perfume.name %></td>
-                <td><%= item.perfume.type %></td>
-                <td>HKD$ <%= item.perfume.price %></td>
-                <td>
-                  <div
-                    class="quantity-control"
-                    data-id="<%= item.perfume._id %>"
-                  >
-                    <button class="minus-btn">-</button>
-                    <input
-                      type="number"
-                      class="quantity-input"
-                      value="<%= item.quantity %>"
-                      min="1"
-                    />
-                    <button class="plus-btn">+</button>
-                  </div>
-                </td>
-                <td>HKD$ <%= item.perfume.price * item.quantity %></td>
-                <td>
-                  <button class="remove-item" data-id="<%= item.perfume._id %>">
-                    <svg
-                      class="trash-icon"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path
-                        d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"
-                      />
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-              <% }); %>
-            </tbody>
-          </table>
+      <% if (cartItems && cartItems.length > 0) { %>
+      <div class="bg-white rounded-lg shadow-lg">
+        <div class="divide-y divide-gray-200">
+          <% cartItems.forEach(function(item) { %>
+          <div class="cart-item">
+            <!-- 商品圖片 -->
+            <div class="w-24 h-24">
+              <img
+                src="<%= item.image %>"
+                alt="<%= item.name %>"
+                class="w-full h-full object-cover rounded"
+              />
+            </div>
 
-          <div class="cart-summary">
-            <div class="total">總計: HKD$ <%= totalPrice %></div>
-            <a href="/checkout" class="checkout-btn">前往結帳</a>
+            <!-- 商品資訊 -->
+            <div>
+              <h3 class="text-lg font-bold mb-1"><%= item.name %></h3>
+              <p class="text-gray-600">香調：<%= item.fragrance %></p>
+              <p class="text-gray-800">原價：HKD$ <%= item.originalPrice %></p>
+              <p class="text-red-500 font-semibold">
+                會員價：HKD$ <%= item.discountedPrice %> (95折)
+              </p>
+            </div>
+
+            <!-- 數量控制 -->
+            <div class="quantity-control" data-perfume-id="<%= item._id %>">
+              <button
+                class="minus-btn bg-gray-200 hover:bg-gray-300 rounded px-3 py-1"
+              >
+                -
+              </button>
+              <span class="quantity mx-3"><%= item.quantity %></span>
+              <button
+                class="plus-btn bg-gray-200 hover:bg-gray-300 rounded px-3 py-1"
+              >
+                +
+              </button>
+            </div>
+
+            <!-- 小計 -->
+            <div class="text-right">
+              <p class="text-gray-600">小計：</p>
+              <p class="text-lg font-bold">
+                HKD$ <%= (item.quantity * item.discountedPrice).toFixed(0) %>
+              </p>
+            </div>
+
+            <!-- 刪除按鈕 -->
+            <button
+              class="delete-btn flex items-center text-red-500 hover:text-red-700 p-2"
+              data-perfume-id="<%= item._id %>"
+            >
+              <span class="mr-1">刪除</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
           </div>
-          <% } else { %>
-          <div class="empty-cart">
-            <p>購物車是空的</p>
-            <a href="/member/profile" class="back-to-shop">回到會員商店</a>
-          </div>
-          <% } %>
+          <% }); %>
         </div>
-      </main>
+
+        <!-- 總計區域 -->
+        <div class="p-6 bg-gray-50 border-t">
+          <div class="max-w-md ml-auto space-y-4">
+            <div class="flex justify-between">
+              <span class="text-gray-600">原價總計：</span>
+              <span class="text-xl font-bold">HKD$ <%= totalPrice %></span>
+            </div>
+            <div class="flex justify-between text-red-500">
+              <span>會員折扣：</span>
+              <span class="text-xl font-bold">-HKD$ <%= totalSaved %></span>
+            </div>
+            <div class="flex justify-between text-green-600">
+              <span>會員價總計：</span>
+              <span class="text-2xl font-bold"
+                >HKD$ <%= discountedTotal %></span
+              >
+            </div>
+            <button
+              class="checkout-btn w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded mt-6"
+            >
+              前往結帳
+            </button>
+          </div>
+        </div>
+      </div>
+      <% } else { %>
+      <div class="text-center py-12 bg-white rounded-lg shadow">
+        <p class="text-gray-600 text-lg mb-4">購物車是空的</p>
+        <a
+          href="/quiz/start"
+          class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded inline-block"
+        >
+          開始選購香水
+        </a>
+      </div>
+      <% } %>
     </div>
 
     <script src="/javascripts/member-cart.js"></script>

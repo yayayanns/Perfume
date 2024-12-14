@@ -11,21 +11,41 @@
   </head>
   <body class="bg-gray-50">
     <div class="max-w-xl mx-auto px-4 py-16">
-      <h1 class="text-3xl font-bold text-green-600 text-center mb-8">
-        訂單已成功建立！
-      </h1>
-
       <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-        <p class="text-gray-600 text-center mb-8">
-          感謝你的購買，我們會盡快處理您的訂單。
-        </p>
-        <% if (orderNumber) { %>
+        <div class="text-center mb-8">
+          <svg
+            class="mx-auto h-16 w-16 text-green-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+          <h2 class="text-3xl font-bold text-gray-800 mt-6 mb-2">
+            親愛的
+            <span class="text-green-600"><%= locals.username %> </span
+            >感謝你的購買!
+          </h2>
+          <p class="text-gray-500 mt-2">訂單已成功建立</p>
+        </div>
+
         <div class="text-center border-t border-b border-gray-200 py-6">
           <p class="text-gray-600 mb-2">你的訂單編號：</p>
-          <p class="text-2xl font-bold text-gray-900"><%= orderNumber %></p>
+          <p class="text-2xl font-bold text-gray-900"><%= orderId %></p>
           <p class="text-sm text-gray-500 mt-2">請保存此編號以便日後查詢</p>
         </div>
-        <% } %>
+
+        <div class="text-center mt-6">
+          <p class="text-gray-600 mb-2">訂單金額：</p>
+          <p class="text-2xl font-bold text-gray-900">
+            HKD$ <%= totalAmount %>
+          </p>
+        </div>
       </div>
 
       <div class="flex justify-center gap-4">
@@ -37,18 +57,12 @@
         </a>
 
         <a
-          href="/orders/guest/lookup"
+          href="/member/orders/lookup"
           class="px-6 py-3 bg-green-100 text-green-700 font-medium rounded-lg hover:bg-green-200 transition duration-150 ease-in-out"
         >
-          查詢訂單
+          查看訂單
         </a>
       </div>
-    </div>
-
-    <!-- 用於調試的隱藏區域 -->
-    <div class="hidden">
-      Order Number Debug: <%= typeof orderNumber !== 'undefined' ? orderNumber :
-      'undefined' %>
     </div>
   </body>
 </html>

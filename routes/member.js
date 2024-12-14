@@ -174,7 +174,7 @@ router.put("/update", async (req, res) => {
       return res.status(404).json({ message: "用戶不存在" });
     }
 
-    // 如果要更改密碼
+    // 如果要更新密碼
     if (currentPassword && newPassword) {
       const isValidPassword = await bcrypt.compare(
         currentPassword,
@@ -210,81 +210,20 @@ router.put("/update", async (req, res) => {
 });
 
 // 登出
-router.post("/logout", (req, res) => {
-  // 清除登入狀態
+router.all("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("登出錯誤:", err);
       return res.status(500).json({ message: "登出失敗" });
     }
+    
+    // 如果是 GET 請求，直接重定向
+    if (req.method === 'GET') {
+      return res.redirect('/');
+    }
+    
+    // 如果是 POST 請求，返回 JSON
     res.json({ message: "已登出" });
   });
 });
-
-// 添加商品到購物車
-router.post("/cart/add", checkAuth, async (req, res) => {
-  try {
-    const db = await getDB();
-    const { perfumeId } = req.body;
-    const userId = req.session.userId;
-
-    // 查找用戶的購物車
-    let cart = await db.collection("shopping_carts").findOne({
-      userId: new ObjectId(userId),
-      status: "active",
-    });
-
-    if (!cart) {
-      // 如果購物車不存在，創建新的購物車
-      cart = {
-        userId: new ObjectId(userId),
-        items: [],
-        status: "active",
-        lastModified: new Date(),
-        createdAt: new Date(),
-      };
-    }
-
-    // 檢查商品是否已在購物車中
-    const existingItem = cart.items.find(
-      (item) => item.perfumeId.toString() === perfumeId
-    );
-
-    if (existingItem) {
-      // 如果商品已存在，增加數量
-      await db.collection("shopping_carts").updateOne(
-        {
-          userId: new ObjectId(userId),
-          "items.perfumeId": new ObjectId(perfumeId),
-        },
-        {
-          $inc: { "items.$.quantity": 1 },
-          $set: { lastModified: new Date() },
-        }
-      );
-    } else {
-      // 如果商品不存在，添加新商品
-      await db.collection("shopping_carts").updateOne(
-        { userId: new ObjectId(userId) },
-        {
-          $push: {
-            items: {
-              perfumeId: new ObjectId(perfumeId),
-              quantity: 1,
-              addedAt: new Date(),
-            },
-          },
-          $set: { lastModified: new Date() },
-        },
-        { upsert: true }
-      );
-    }
-
-    res.json({ success: true, message: "商品已加入購物車" });
-  } catch (error) {
-    console.error("加入購物車錯誤:", error);
-    res.status(500).json({ success: false, message: "無法加入購物車" });
-  }
-});
-
 module.exports = router;
